@@ -19,7 +19,7 @@ def print_report(d: dict) -> None:
 def save_tpo_csv(d: dict) -> None:
     """открываем файл, делаем отчет и сохраняем его"""
     with open('Corp_Summary_res.csv', 'w', encoding="utf8") as file:
-        file.write('Dept;Count;Min;Max;Mean\n')
+        file.write('Департамент;Численность;Минимальная з/п;Максимальная з/п;Средняя з/п\n')
         for k, v in d.items():
             file.write(
                 f'{k};{v["counter"]};{min(v["salaries"])};{max(v["salaries"])};{round(sum(v["salaries"]) / v["counter"], 2)}\n')
@@ -52,11 +52,11 @@ def menu() -> None:
         print('Выберите: {}/{}/{}'.format(*options))
         option = input()
     if option in options:
-        if options[option] == options['1']:
+        if options[option] == 1:
             print_hierarchy(d)
-        elif options[option] == options['2']:
+        elif options[option] == 2:
             print_report(d)
-        elif options[option] == options['3']:
+        elif options[option] == 3:
             save_tpo_csv(d)
 
 

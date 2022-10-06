@@ -1,3 +1,20 @@
+def parsing_csv_file(filename) -> dict:
+    """открываем файл и читаем построчно нужные нам столбцы"""
+    d = {}
+    with open(filename, encoding="utf8") as file:
+        for line in file.readlines()[1:]:
+            _, dept, group, _, _, salary = line.split(';')
+            if dept not in d:
+                d[dept] = {
+                    'groups': set(),
+                    'counter': 0,
+                    'salaries': []
+                }
+            d[dept]['groups'].add(group)
+            d[dept]['counter'] += 1
+            d[dept]['salaries'].append(float(salary[:-1]))
+    return d
+
 def print_hierarchy(d: dict) -> None:
     """печатаем иерархию отделов"""
     for k, v in d.items():
@@ -17,29 +34,18 @@ def print_report(d: dict) -> None:
 
 
 def save_tpo_csv(d: dict) -> None:
-    """открываем файл, делаем отчет и сохраняем его"""
+    """делаем отчет и сохраняем его"""
     with open('Corp_Summary_res.csv', 'w', encoding="utf8") as file:
         file.write('Департамент;Численность;Минимальная з/п;Максимальная з/п;Средняя з/п\n')
         for k, v in d.items():
             file.write(
-                f'{k};{v["counter"]};{min(v["salaries"])};{max(v["salaries"])};{round(sum(v["salaries"]) / v["counter"], 2)}\n')
+                f'{k};{v["counter"]};{min(v["salaries"])};{max(v["salaries"])};'
+                f'{round(sum(v["salaries"]) / v["counter"], 2)}\n')
 
 
 def menu() -> None:
-    """открываем файл, считывая по строкам нужные столбцы, создаем словарь словарей для иерархии, делаем меню"""
-    d = dict()
-    with open('Corp_Summary.csv', encoding="utf8") as file:
-        for line in file.readlines()[1:]:
-            _, dept, group, _, _, salary = line.split(';')
-            if dept not in d.keys():
-                d[dept] = {
-                    'groups': set(),
-                    'counter': 0,
-                    'salaries': []
-                }
-            d[dept]['groups'].add(group)
-            d[dept]['counter'] += 1
-            d[dept]['salaries'].append(float(salary[:-1]))
+    """открываем файл, делаем меню"""
+    d = parsing_csv_file('Corp_Summary.csv')
     print(
         'Меню: \n'
         '1. Вывести в понятном виде иерархию команд \n'
